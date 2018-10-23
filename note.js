@@ -49,37 +49,53 @@ Vue.component('note-form', {
 Vue.component('note-section', {
   props: {
     list: {
-      type: Array,
-      required: true
+      type: Array
     }
   },
   template: `
     <div class="section">
       <div class="container">
         <div class="columns is-multiline">
-          <div class="column is-4" v-for="(item, index) in list" :key="item.text">
-            <article class="message">
-              <div class="message-header">
-                <p>{{ item.text }}</p>
-                <button class="delete" @click="removeNote(index)"></button>
-              </div>
-        
-              <div class="message-body">
-                <p>{{ item.date }}</p>
-        
-                <br>
-        
-                <p>{{ item.content }}</p>
-              </div>
-            </article>
+          <div class="column is-4" v-for="item in list">
+            <note-card 
+              :note="item"
+              :key="item.text"
+              @remove-note="removeNote"
+            ></note-card>
           </div>
         </div>
       </div>
     </div>
   `,
   methods: {
-    removeNote(index) {
-      this.$emit('remove-note', index);
+    removeNote(note) {
+      this.$emit('remove-note', note);
+    }
+  }
+});
+
+// Note Card Component
+Vue.component('note-card', {
+  props: ['note'],
+  template: `
+  <article class="message">
+    <div class="message-header">
+      <p>{{ note.text }}</p>
+      <button class="delete" @click="removeNote"></button>
+    </div>
+
+    <div class="message-body">
+      <p>{{ note.date }}</p>
+
+      <br>
+
+      <p>{{ note.content }}</p>
+    </div>
+  </article>
+  `,
+  methods: {
+    removeNote() {
+      this.$emit('remove-note', this.note);
     }
   }
 });
@@ -96,10 +112,11 @@ const app = new Vue({
     ]
   },
   methods: {
-    updateNotes(note) {
+    handleUpdate(note) {
       this.notes.push(note);
     },
-    deleteNote(index) {
+    handleDelete(note) {
+      let index = this.notes.indexOf(note);
       this.notes.splice(index, 1);
     }
   }
