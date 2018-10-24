@@ -36,7 +36,7 @@ Vue.component('note-form', {
           date: new Date(Date.now()).toLocaleString()
         };
 
-        this.$emit('add-note', newNote);
+        store.commit('addNote', newNote);
 
         this.noteTitle = '';
         this.noteContent = '';
@@ -47,30 +47,24 @@ Vue.component('note-form', {
 
 // Note Section Component
 Vue.component('note-section', {
-  props: {
-    list: {
-      type: Array
-    }
-  },
   template: `
     <div class="section">
       <div class="container">
         <div class="columns is-multiline">
-          <div class="column is-4" v-for="item in list">
+          <div class="column is-4" v-for="note in notes">
             <note-card 
-              :note="item"
-              :key="item.text"
-              @remove-note="removeNote"
+              :note="note"
+              :key="note.text"
             ></note-card>
           </div>
         </div>
       </div>
     </div>
   `,
-  methods: {
-    removeNote(note) {
-      this.$emit('remove-note', note);
-    }
+  data() {
+    return {
+      notes: store.state.notes
+    };
   }
 });
 
@@ -95,14 +89,14 @@ Vue.component('note-card', {
   `,
   methods: {
     removeNote() {
-      this.$emit('remove-note', this.note);
+      store.commit('deleteNote', this.note);
     }
   }
 });
 
-const app = new Vue({
-  el: '#app',
-  data: {
+// Store Container
+const store = new Vuex.Store({
+  state: {
     notes: [
       {
         text: 'Check new reference chapter',
@@ -111,13 +105,17 @@ const app = new Vue({
       }
     ]
   },
-  methods: {
-    handleUpdate(note) {
-      this.notes.push(note);
+  mutations: {
+    addNote(state, note) {
+      state.notes.push(note);
     },
-    handleDelete(note) {
-      let index = this.notes.indexOf(note);
-      this.notes.splice(index, 1);
+    deleteNote(state, note) {
+      let index = state.notes.indexOf(note);
+      state.notes.splice(index, 1);
     }
   }
+});
+
+const app = new Vue({
+  el: '#app'
 });
