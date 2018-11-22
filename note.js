@@ -103,21 +103,23 @@ Vue.component('note-card', {
 const app = new Vue({
   el: '#app',
   data: {
-    notes: [
-      {
-        text: 'Check new reference chapter',
-        content: 'See Chapter 45 for list of volatile liquids',
-        date: new Date(Date.now()).toLocaleString()
-      }
-    ]
+    notes: []
   },
   methods: {
     handleUpdate(note) {
       this.notes.push(note);
+      this.saveNotes(this.notes);
     },
     handleDelete(note) {
       let index = this.notes.indexOf(note);
       this.notes.splice(index, 1);
+      this.saveNotes(this.notes);
+    },
+    saveNotes(notes) {
+      localStorage.setItem('notes', JSON.stringify(notes));
     }
+  },
+  created() {
+    this.notes = localStorage.getItem('notes') ? JSON.parse(localStorage.getItem('notes')) : [];
   }
 });
