@@ -36,7 +36,7 @@ Vue.component('note-form', {
           date: new Date(Date.now()).toLocaleString()
         };
 
-        this.$emit('add-note', newNote);
+        this.$emit('addNote', newNote);
 
         this.noteTitle = '';
         this.noteContent = '';
@@ -48,30 +48,22 @@ Vue.component('note-form', {
 // Note Section Component
 Vue.component('note-section', {
   props: {
-    list: {
-      type: Array
-    }
+    notes: Array
   },
   template: `
     <div class="section">
       <div class="container">
         <div class="columns is-multiline">
-          <div class="column is-4" v-for="item in list">
+          <div class="column is-4" v-for="note in notes">
             <note-card 
-              :note="item"
-              :key="item.text"
-              @remove-note="removeNote"
+              :note="note"
+              :key="note.text"
             ></note-card>
           </div>
         </div>
       </div>
     </div>
-  `,
-  methods: {
-    removeNote(note) {
-      this.$emit('remove-note', note);
-    }
-  }
+  `
 });
 
 // Note Card Component
@@ -95,7 +87,7 @@ Vue.component('note-card', {
   `,
   methods: {
     removeNote() {
-      this.$emit('remove-note', this.note);
+      this.$emit('deleteNote', this.note);
     }
   }
 });
