@@ -36,7 +36,7 @@ Vue.component('note-form', {
           date: new Date(Date.now()).toLocaleString()
         };
 
-        this.$emit('addNote', newNote);
+        this.$emit('add-note', newNote);
 
         this.noteTitle = '';
         this.noteContent = '';
@@ -58,12 +58,18 @@ Vue.component('note-section', {
             <note-card 
               :note="note"
               :key="note.text"
+              @delete-note="removeNote"
             ></note-card>
           </div>
         </div>
       </div>
     </div>
-  `
+  `,
+  methods: {
+    removeNote(note) {
+      this.$emit('remove-note', note);
+    }
+  }
 });
 
 // Note Card Component
@@ -87,7 +93,7 @@ Vue.component('note-card', {
   `,
   methods: {
     removeNote() {
-      this.$emit('deleteNote', this.note);
+      this.$emit('delete-note', this.note);
     }
   }
 });
