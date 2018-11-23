@@ -53,7 +53,7 @@ Vue.component('note-section', {
   template: `
     <div class="section">
       <div class="container">
-        <div class="columns is-multiline">
+        <div class="columns is-multiline" v-if="notes.length">
           <div class="column is-4" v-for="note in notes">
             <note-card 
               :note="note"
@@ -61,6 +61,10 @@ Vue.component('note-section', {
               @delete-note="removeNote"
             ></note-card>
           </div>
+        </div>
+
+        <div class="notification is-danger has-text-centered" v-else>
+          There are currently no posted notes.
         </div>
       </div>
     </div>
